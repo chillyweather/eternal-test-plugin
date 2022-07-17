@@ -1,17 +1,19 @@
 // @ts-nocheck
 //* test file for all the bullshit i think about
 
-function changeProjectStatus(status: string) {
-  const page = figma.currentPage;
-  const statusNodes = page.findAll((node) => node.name === ".DS-status");
+const loadFonts = async () => {
+  await figma.loadFontAsync({ family: "Inter", style: "Regular" });
+  await figma.loadFontAsync({ family: "Inter", style: "Bold" });
+};
 
-  statusNodes.forEach((node) => {
-    node.setProperties({ "Property 1": `${status}` });
-  });
+const textSizes = {
+  xs: 12,
+  s: 14,
+  m: 18,
+  l: 26,
+  xl: 40,
+};
 
-  const regex = /['🟣🟡⚪️🟢🔴🔵⚫️🟠']/u;
-  page.name = page.name.replace(regex, "⚪️");
-}
+loadFonts().then(() => {});
 
-changeProjectStatus("tbd");
 figma.closePlugin();
