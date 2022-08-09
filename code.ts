@@ -1,20 +1,24 @@
 //@ts-nocheck
 
-const loadFonts = async () => {
-  await figma.loadFontAsync({ family: "Inter", style: "Regular" });
-  await figma.loadFontAsync({ family: "Inter", style: "Bold" });
-};
+const sel = figma.currentPage.selection[0];
 
-const releaseNotes = figma.createComponent();
-const title = figma.createComponent();
-const row = figma.createComponent();
-const cell = figma.createComponent();
+let result = [];
+function lookForProperties(node) {
+  if (node.componentProperties) {
+    let props = node.componentProperties;
+    const propArr = Object.entries(props);
+    result = result.concat(propArr);
+  }
+  if (node.children && node.children.length > 0) {
+    node.children.forEach((element) => {
+      lookForProperties(element);
+    });
+    return result;
+  }
+  return result;
+}
 
-const titleText = figma.createText();
-const noteText = figma.createText();
-
-
-
-loadFonts()
-  .then(() => {})
-  .finally(() => figma.closePlugin());
+const allProps = lookForProperties(sel);
+const filteredArray = allProps.filter((node) => node[1].type === "TEXT");
+console.log("what I need is ", filteredArray);
+figma.closePlugin();
